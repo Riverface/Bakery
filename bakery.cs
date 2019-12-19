@@ -75,8 +75,7 @@ namespace Bakery
             Console.WriteLine("type menu for our selection of baked goods.");
             Console.WriteLine("type 'cart' to see what you've already added to your order.");
             Console.WriteLine("type 'Add' then the item you'd like to order something.");
-            Console.WriteLine("type 'checkout' to verify your cart, then send the order.");
-            Console.WriteLine("Past orders are accessed via the 'history' command.");
+            Console.WriteLine("type 'checkout' to send the order.");
             Console.WriteLine("------------");
             while (bake == true)
             {
