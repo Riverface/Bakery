@@ -21,7 +21,7 @@ namespace Bakery
                 if (loaf.quantity % 3 == 0)
                 {
                     o = loaf.quantity / 3;
-                    loaf.totalprice = (loaf.totalprice - (1.0F * o));      
+                    loaf.totalprice = (loaf.totalprice - (1.0F * o));
                 }
                 Console.WriteLine("---------------------------");
 
@@ -75,7 +75,7 @@ namespace Bakery
             Console.WriteLine("type menu for our selection of baked goods.");
             Console.WriteLine("type 'cart' to see what you've already added to your order.");
             Console.WriteLine("type 'Add' then the item you'd like to order something.");
-            Console.WriteLine("type 'checkout' to send the order.");
+            Console.WriteLine("type 'push' to send the order.");
             Console.WriteLine("------------");
             while (bake == true)
             {
@@ -83,7 +83,8 @@ namespace Bakery
             }
         }
 
-        public static void Help(){
+        public static void Help()
+        {
 
         }
         public static bool Lengthchk(string[] inputs, int expectedmin, int expectedmax)
@@ -126,31 +127,32 @@ namespace Bakery
                     }
                     break;
                 case "add":
-                    if( bakery.SearchItem(inputnoun, bakery.itemMenu ) != null){
-                    Item found = bakery.SearchItem(inputnoun, bakery.itemMenu);
-                    Console.WriteLine("How many?");
-                    int quant = Convert.ToInt32(Console.ReadLine());
-                    string printadd = "";
-                    printadd += "Added ";
-                    printadd += quant + " " + found.name;
-                    if (quant >= 2)
+                    if (bakery.SearchItem(inputnoun, bakery.itemMenu) != null)
                     {
-                        printadd += "s";
-                    }
-                    else
-                    {
-                        printadd += "";
-                    }
-                    printadd += " to the cart.";
-                    Console.Write(printadd);
-                    bakery.ToCart(found, quant);
+                        Item found = bakery.SearchItem(inputnoun, bakery.itemMenu);
+                        Console.WriteLine("How many?");
+                        int quant = Convert.ToInt32(Console.ReadLine());
+                        string printadd = "";
+                        printadd += "Added ";
+                        printadd += quant + " " + found.name;
+                        if (quant >= 2)
+                        {
+                            printadd += "s";
+                        }
+                        else
+                        {
+                            printadd += "";
+                        }
+                        printadd += " to the cart.";
+                        Console.Write(printadd);
+                        bakery.ToCart(found, quant);
                     }
                     break;
                 case "menu":
                     Console.WriteLine("Pierre's Menu:");
                     foreach (Item bakeitem in bakery.itemMenu)
                     {
-                    Console.WriteLine("--------------");
+                        Console.WriteLine("--------------");
                         Console.WriteLine(bakeitem.name);
                         Console.WriteLine(bakeitem.description);
                         Console.WriteLine("$" + bakeitem.pricePer);
@@ -172,19 +174,28 @@ namespace Bakery
                             Console.WriteLine(bakeitem.plural);
                         }
                         Console.WriteLine(bakeitem.description);
-                        Console.WriteLine("$" + bakeitem.pricePer+" per "+ bakeitem.name);
-                        Console.WriteLine("$" + bakeitem.totalprice + " for " + bakeitem.quantity +" "+ bakeitem.name+"s");
+                        Console.WriteLine("$" + bakeitem.pricePer + " per " + bakeitem.name);
+                        Console.WriteLine("$" + bakeitem.totalprice + " for " + bakeitem.quantity + " " + bakeitem.name + "s");
 
                         Console.WriteLine("--------------");
                     }
-                        Console.WriteLine("Total:");
-                        Console.WriteLine("$" + bakery.curOrder.totalafterdeals);
+                    Console.WriteLine("Total:");
+                    Console.WriteLine("$" + bakery.curOrder.totalafterdeals);
                     break;
                 case "push":
-                bakery.history.Add(bakery.curOrder);
-                Console.WriteLine("Order sent! Use 'history' to view this order.");
-                //Not actually implemented lol
-                bakery.curOrder = new Order();
+                    bakery.history.Add(bakery.curOrder);
+                    Console.WriteLine("Order sent! Use 'history' to view this order.");
+                    //Not actually implemented lol
+                    bakery.curOrder = new Order();
+                    break;
+                case "help":
+                    Console.WriteLine("Welcome to Pierre's!");
+                    Console.WriteLine("------------");
+                    Console.WriteLine("type menu for our selection of baked goods.");
+                    Console.WriteLine("type 'cart' to see what you've already added to your order.");
+                    Console.WriteLine("type 'Add' then the item you'd like to order something.");
+                    Console.WriteLine("type 'push' to send the order.");
+                    Console.WriteLine("------------");
                     break;
             }
         }
