@@ -71,12 +71,7 @@ namespace Bakery
             Pierres.coupons.Add(new Coupon(twoForOne, "Buy 2 get one free", "Savings of 2.50$ per coupon!", "muffin"));
             Pierres.coupons.Add(new Coupon(threeforfive, "Get 3 loaves ", "Savings of 1$ per coupon!", "loaf"));
             Console.WriteLine("Welcome to Pierre's!");
-            Console.WriteLine("------------");
-            Console.WriteLine("type menu for our selection of baked goods.");
-            Console.WriteLine("type 'cart' to see what you've already added to your order.");
-            Console.WriteLine("type 'Add' then the item you'd like to order something.");
-            Console.WriteLine("type 'push' to send the order.");
-            Console.WriteLine("------------");
+            Help();
             while (bake == true)
             {
                 Buffer(Pierres);
@@ -85,7 +80,12 @@ namespace Bakery
 
         public static void Help()
         {
-
+            Console.WriteLine("--------------------------------------------------------");
+            Console.WriteLine("type menu for our selection of baked goods.");
+            Console.WriteLine("type 'cart' to see what you've already added to your order.");
+            Console.WriteLine("type 'Add' then the item you'd like to order something.");
+            Console.WriteLine("type 'push' to send the order.");
+            Console.WriteLine("--------------------------------------------------------");
         }
         public static bool Lengthchk(string[] inputs, int expectedmin, int expectedmax)
         {
@@ -184,18 +184,22 @@ namespace Bakery
                     break;
                 case "push":
                     bakery.history.Add(bakery.curOrder);
-                    Console.WriteLine("Order sent! Use 'history' to view this order.");
+                    Console.WriteLine("Sending.");
+                    Console.Write(".");
+                    System.Threading.Thread.Sleep(1000);
+                    Console.Write(".");
+                    System.Threading.Thread.Sleep(1000);
+                    Console.Write(".");
+                    System.Threading.Thread.Sleep(1000);
+                    Console.Write(".");
+                    System.Threading.Thread.Sleep(1000);
+                    Console.WriteLine("Order sent, form cleared.");
+                    Console.WriteLine("Thank you for shopping with us! You may enter another order.");
                     //Not actually implemented lol
                     bakery.curOrder = new Order();
                     break;
                 case "help":
-                    Console.WriteLine("Welcome to Pierre's!");
-                    Console.WriteLine("------------");
-                    Console.WriteLine("type menu for our selection of baked goods.");
-                    Console.WriteLine("type 'cart' to see what you've already added to your order.");
-                    Console.WriteLine("type 'Add' then the item you'd like to order something.");
-                    Console.WriteLine("type 'push' to send the order.");
-                    Console.WriteLine("------------");
+                    Help();
                     break;
             }
         }
