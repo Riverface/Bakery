@@ -13,7 +13,6 @@ namespace Bakery
             Pierres.AddItem("Loaf", "A loaf of bread. Comes in different varieties.", 2F, "loaves");
             bakeAction threeforfive = () =>
             {
-
                 Item loaf = Pierres.SearchItem("Loaf", Pierres.curOrder.order);
                 float indPrice = loaf.pricePer;
                 loaf.totalprice = loaf.total();
@@ -24,9 +23,7 @@ namespace Bakery
                     loaf.totalprice = (loaf.totalprice - (1.0F * o));
                 }
                 Console.WriteLine("---------------------------");
-
                 Console.Write("Buy 3 loaves for 5$");
-
                 if (o > 0)
                 {
                     Console.Write(" applied " + o + " times!");
@@ -52,9 +49,7 @@ namespace Bakery
                     muffin.totalprice = (muffin.totalprice - (2.50F * o));
                 }
                 Console.WriteLine("---------------------------");
-
                 Console.Write("Buy 2 get one free on muffins");
-
                 if (o > 0)
                 {
                     Console.Write(" applied " + o + " times!");
@@ -77,7 +72,6 @@ namespace Bakery
                 Buffer(Pierres);
             }
         }
-
         public static void Help()
         {
             Console.WriteLine("--------------------------------------------------------");
@@ -116,7 +110,6 @@ namespace Bakery
                     inputnoun += inputchunks[ct];
                 }
             }
-
             switch (inputverb.ToLower())
             {
                 case "deals":
@@ -176,7 +169,6 @@ namespace Bakery
                         Console.WriteLine(bakeitem.description);
                         Console.WriteLine("$" + bakeitem.pricePer + " per " + bakeitem.name);
                         Console.WriteLine("$" + bakeitem.totalprice + " for " + bakeitem.quantity + " " + bakeitem.name + "s");
-
                         Console.WriteLine("--------------");
                     }
                     Console.WriteLine("Total:");
@@ -204,5 +196,4 @@ namespace Bakery
             }
         }
     }
-
 }
