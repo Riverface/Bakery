@@ -5,6 +5,10 @@ namespace Bkrylib
     public delegate void bakeAction();
     public class Establishment
     {
+        public List<Coupon> coupons;
+        public List<Item> itemMenu;
+        public Order curOrder = new Order();
+        public List<Order> history = new List<Order>();
         public Item SearchItem(string thisinput, List<Item> curlist)
         {
             thisinput = thisinput.ToLower();
@@ -17,29 +21,23 @@ namespace Bkrylib
             {
                 if (usingcpns)
                 {
-                
-                DeployDeals(thing);
-                workingtotal += thing.total();
+                    DeployDeals(thing);
+                    workingtotal += thing.total();
                 }
             }
-            
             return workingtotal;
         }
-        public void DeployDeals(Item dealtwith){
-                    foreach (Coupon thiscpn in coupons)
-                    {
-                        if (dealtwith.name.ToLower() == thiscpn.appliesto.ToLower())
-                        {
-                            
-                            thiscpn.deal();
-
-                        }
-                    }
+        public void DeployDeals(Item dealtwith)
+        {
+            foreach (Coupon thiscpn in coupons)
+            {
+                if (dealtwith.name.ToLower() == thiscpn.appliesto.ToLower())
+                {
+                    thiscpn.deal();
+                }
+            }
         }
-        public List<Coupon> coupons;
-        public List<Item> itemMenu;
-        public Order curOrder = new Order();
-        public List<Order> history = new List<Order>();
+
         public Establishment()
         {
             itemMenu = new List<Item>();
@@ -47,13 +45,12 @@ namespace Bkrylib
         }
         public void Pushorder()
         {
-          history.Add(curOrder);  
+            history.Add(curOrder);
         }
         public void AddItem(string Name, string Description, float Priceper, string Plural = null)
         {
             itemMenu.Add(new Item(Name, Description, Priceper, 1));
         }
-
         public void ToCart(Item added, int quantity)
         {
             Item tempquant = added;
@@ -67,22 +64,17 @@ namespace Bkrylib
                 tempquant.quantity = quantity;
                 curOrder.order.Add(added);
             }
-
         }
     }
-
     public class Order
     {
         public List<Item> order;
         public float totalafterdeals;
-
         public Order()
         {
             order = new List<Item>();
-         totalafterdeals = 0;
-
+            totalafterdeals = 0;
         }
-        
     }
     public class Item
     {
@@ -100,7 +92,6 @@ namespace Bkrylib
             quantity = Quantity;
             totalprice = pricePer * Quantity;
             description = Description;
-            
         }
         public float total()
         {
