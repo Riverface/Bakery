@@ -1,127 +1,137 @@
 using System;
 using System.Collections.Generic;
+
 namespace Bkrylib
 {
-    public delegate void bakeAction();
+    public delegate void BakeAction();
     public class Establishment
     {
-        public List<Coupon> coupons;
-        public List<Item> itemMenu;
-        public Order curOrder = new Order();
-        public List<Order> history = new List<Order>();
-        public Item SearchItem(string thisinput, List<Item> curlist)
+        public List<Coupon> Coupons;
+        public List<Item> ItemMenu;
+        public Order Tab = new Order();
+        public List<Order> History = new List<Order>();
+
+        public Establishment()
         {
-            thisinput = thisinput.ToLower();
-            return curlist.Find(thing => thing.name.ToLower().Contains(thisinput.ToLower()));
+            ItemMenu = new List<Item>();
+            Coupons = new List<Coupon>();
         }
-        public float total(bool usingcpns = false)
+
+        public Item SearchItem(string searchTerm, List<Item> searchList)
         {
-            float workingtotal = 0;
-            foreach (Item thing in curOrder.order)
+            searchTerm = searchTerm.ToLower();
+            return searchList.Find(thing => thing.Tag.ToLower().Contains(searchTerm.ToLower()));
+        }
+
+        public float CountOrderTotal(bool usingCpns = false)
+        {
+            float workingTotal = 0;
+            foreach (Item thing in Tab.Cart)
             {
-                if (usingcpns)
+                if (usingCpns)
                 {
                     DeployDeals(thing);
-                    workingtotal += thing.total();
+                    workingTotal += thing.Total;
                 }
             }
-            return workingtotal;
+            return workingTotal;
         }
-        public void DeployDeals(Item dealtwith)
+
+        public void DeployDeals(Item dealtWith)
         {
-            foreach (Coupon thiscpn in coupons)
+            foreach (Coupon thisCpn in Coupons)
             {
-                if (dealtwith.name.ToLower() == thiscpn.appliesto.ToLower())
+                if (dealtWith.Tag.ToLower() == thisCpn.Target.ToLower())
                 {
-                    thiscpn.deal();
+                    thisCpn.Deal();
                 }
             }
         }
 
-        public Establishment()
-        {
-            itemMenu = new List<Item>();
-            coupons = new List<Coupon>();
-        }
         public void Pushorder()
         {
-            history.Add(curOrder);
+            History.Add(Tab);
         }
-        public void AddItem(string Name, string Description, float Priceper, string Plural = null)
+
+        public void AddItem(string name, string itemDesc, float individualPrice, string Plural = null)
         {
-            itemMenu.Add(new Item(Name, Description, Priceper, 1));
+            ItemMenu.Add(new Item(name, itemDesc, individualPrice, 1));
         }
-        public void ToCart(Item added, int quantity)
+
+        public void ToCart(Item added, int Amount)
         {
-            Item tempquant = added;
-            if (curOrder.order.Contains(added))
+            Item tempQuant = added;
+            if (Tab.Cart.Contains(added))
             {
-                Item foundinorder = SearchItem(added.name, curOrder.order);
-                foundinorder.quantity += quantity;
+                Item foundInOrder = SearchItem(added.Tag, Tab.Cart);
+                foundInOrder.Amount += Amount;
             }
             else
             {
-                tempquant.quantity = quantity;
-                curOrder.order.Add(added);
+                tempQuant.Amount = Amount;
+                Tab.Cart.Add(added);
             }
         }
     }
+
     public class Order
     {
-        public List<Item> order;
-        public float totalafterdeals;
+        public List<Item> Cart;
+        public float TotalAfterDeals;
         public Order()
         {
-            order = new List<Item>();
-            totalafterdeals = 0;
+            Cart = new List<Item>();
+            TotalAfterDeals = 0;
         }
     }
     public class Item
     {
-        public string name;
-        public float pricePer;
-        public int quantity;
-        public float totalprice;
-        public string description;
-        public string plural;
-        public float TpriceAfterDeals;
-        public Item(string Name, string Description, float Priceper, int Quantity = 1)
+        public string Tag;
+        public float PricePer;
+        public int Amount;
+        public float Total;
+        public string ItemDesc;
+        public string Plural;
+
+        public Item(string name, string itemDesc, float individualPrice, int quantity = 1)
         {
-            name = Name;
-            pricePer = Priceper;
-            quantity = Quantity;
-            totalprice = pricePer * Quantity;
-            description = Description;
+            Tag = name;
+            PricePer = individualPrice;
+            Amount = quantity;
+            Total = PricePer * quantity;
+            ItemDesc = itemDesc;
         }
-        public float total()
+
+        public Item(string name, string itemDesc, float individualPrice, int quantity = 1, string plural = "")
         {
-            TpriceAfterDeals = totalprice;
-            return pricePer * quantity;
+            Tag = name;
+            PricePer = individualPrice;
+            Amount = quantity;
+            Total = PricePer * quantity;
+            ItemDesc = itemDesc;
+            Plural = plural;
         }
-        public Item(string Name, string Description, float Priceper, int Quantity = 1, string Plural = "")
+
+        public float CountItemTotal()
         {
-            name = Name;
-            pricePer = Priceper;
-            quantity = Quantity;
-            totalprice = pricePer * Quantity;
-            description = Description;
-            plural = Plural;
+            return PricePer * Amount;
         }
     }
     public class Coupon
     {
-        public bakeAction deal;
-        public bool done;
-        public string name;
-        public string description;
-        public string appliesto;
-        public Coupon(bakeAction Tdeal, string Name, string Description, string Appliesto)
+        public BakeAction Deal;
+        public bool Done;
+        public string Tag;
+        public string ItemDesc;
+        public string Target;
+
+        public Coupon(BakeAction tDeal, string name, string itemDesc, string appliesTo)
         {
-            name = Name;
-            description = Description;
-            done = false;
-            deal = Tdeal;
-            appliesto = Appliesto;
+            Tag = name;
+            ItemDesc = itemDesc;
+            Done = false;
+            Deal = tDeal;
+            Target = appliesTo;
         }
     }
 }

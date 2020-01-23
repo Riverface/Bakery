@@ -1,6 +1,7 @@
 using Bkrylib;
 using System;
 using System.Collections.Generic;
+
 namespace Bakery
 {
     public class Bakery
@@ -9,19 +10,17 @@ namespace Bakery
         {
             bool bake = true;
             Establishment Pierres = new Establishment();
-            Pierres.AddItem("Muffin", "Just a muffin.", 5F, "muffins");
+            Pierres.AddItem("Muffin", "Just a muffin.", 2.50F, "muffins");
             Pierres.AddItem("Loaf", "A loaf of bread. Comes in different varieties.", 2F, "loaves");
-            bakeAction threeforfive = () =>
+
+            BakeAction threeForFive = () =>
             {
-                Item loaf = Pierres.SearchItem("Loaf", Pierres.curOrder.order);
-                float indPrice = loaf.pricePer;
-                loaf.totalprice = loaf.total();
+                Item loaf = Pierres.SearchItem("Loaf", Pierres.Tab.Cart);
+                float indPrice = loaf.PricePer;
+                loaf.Total = loaf.CountItemTotal();
                 float o = 0;
-                if (loaf.quantity % 3 == 0)
-                {
-                    o = loaf.quantity / 3;
-                    loaf.totalprice = (loaf.totalprice - (1.0F * o));
-                }
+                o = loaf.Amount / 3;
+                loaf.Total = (loaf.Total - (1.0F * o));
                 Console.WriteLine("---------------------------");
                 Console.Write("Buy 3 loaves for 5$");
                 if (o > 0)
@@ -35,19 +34,19 @@ namespace Bakery
                     Console.WriteLine("");
                 }
                 Console.WriteLine("---------------------------");
-                Pierres.SearchItem("Loaf", Pierres.curOrder.order).totalprice = loaf.totalprice;
+                Pierres.SearchItem("Loaf", Pierres.Tab.Cart).Total = loaf.Total;
             };
-            bakeAction twoForOne = () =>
+
+            BakeAction twoForOne = () =>
             {
-                Item muffin = Pierres.SearchItem("Muffin", Pierres.curOrder.order);
-                float indPrice = muffin.pricePer;
-                muffin.totalprice = muffin.total();
+                Item muffin = Pierres.SearchItem("Muffin", Pierres.Tab.Cart);
+                float indPrice = muffin.PricePer;
+                muffin.Total = muffin.CountItemTotal();
+                Console.WriteLine(muffin.Total);
                 float o = 0;
-                if (muffin.quantity % 3 == 0)
-                {
-                    o = muffin.quantity / 3;
-                    muffin.totalprice = (muffin.totalprice - (2.50F * o));
-                }
+
+                o = muffin.Amount / 3;
+                muffin.Total = (muffin.Total - (2.50F * o));
                 Console.WriteLine("---------------------------");
                 Console.Write("Buy 2 get one free on muffins");
                 if (o > 0)
@@ -60,11 +59,14 @@ namespace Bakery
                     Console.Write(" applied!");
                     Console.WriteLine("");
                 }
+                Console.Write(muffin.Total);
                 Console.WriteLine("---------------------------");
-                Pierres.SearchItem("Muffin", Pierres.curOrder.order).totalprice = muffin.totalprice;
+                Pierres.SearchItem("Muffin", Pierres.Tab.Cart).Total = muffin.Total;
             };
-            Pierres.coupons.Add(new Coupon(twoForOne, "Buy 2 get one free", "Savings of 2.50$ per coupon!", "muffin"));
-            Pierres.coupons.Add(new Coupon(threeforfive, "Get 3 loaves ", "Savings of 1$ per coupon!", "loaf"));
+
+            Pierres.Coupons.Add(new Coupon(twoForOne, "Buy 2 get one free", "Savings of 2.50$ per coupon!", "muffin"));
+            Pierres.Coupons.Add(new Coupon(threeForFive, "Get 3 loaves ", "Savings of 1$ per coupon!", "loaf"));
+
             Console.WriteLine("Welcome to Pierre's!");
             Help();
             while (bake == true)
@@ -79,55 +81,48 @@ namespace Bakery
             Console.WriteLine("type 'cart' to see what you've already added to your order.");
             Console.WriteLine("type 'Add' then the item you'd like to order something.");
             Console.WriteLine("type 'push' to send the order.");
+            Console.WriteLine("Lastly, type 'deals' to see our specials!");
             Console.WriteLine("--------------------------------------------------------");
         }
-        public static bool Lengthchk(string[] inputs, int expectedmin, int expectedmax)
-        {
-            if (inputs.Length == expectedmin)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+
         public static void Buffer(Establishment bakery)
         {
             Console.WriteLine("");
             string input = Console.ReadLine();
             string[] inputchunks = input.Split(" ");
-            string inputnoun = "";
-            string inputverb = "";
+            string inputNoun = "";
+            string inputVerb = "";
+
             for (int ct = 0; ct < inputchunks.Length; ct++)
             {
                 if (ct == 0)
                 {
-                    inputverb = inputchunks[0];
+                    inputVerb = inputchunks[0];
                 }
                 else if (ct > 0)
                 {
-                    inputnoun += inputchunks[ct];
+                    inputNoun += inputchunks[ct];
                 }
             }
-            switch (inputverb.ToLower())
+
+            switch (inputVerb.ToLower())
             {
                 case "deals":
-                    foreach (Coupon d in bakery.coupons)
+                    foreach (Coupon d in bakery.Coupons)
                     {
-                        Console.WriteLine(d.name + " on " + bakery.SearchItem(d.appliesto, bakery.itemMenu).name);
-                        Console.WriteLine(d.description);
+                        Console.WriteLine(d.Tag + " on " + bakery.SearchItem(d.Target, bakery.ItemMenu).Tag);
+                        Console.WriteLine(d.ItemDesc);
                     }
                     break;
                 case "add":
-                    if (bakery.SearchItem(inputnoun, bakery.itemMenu) != null)
+                    if (bakery.SearchItem(inputNoun, bakery.ItemMenu) != null)
                     {
-                        Item found = bakery.SearchItem(inputnoun, bakery.itemMenu);
+                        Item found = bakery.SearchItem(inputNoun, bakery.ItemMenu);
                         Console.WriteLine("How many?");
                         int quant = Convert.ToInt32(Console.ReadLine());
                         string printadd = "";
                         printadd += "Added ";
-                        printadd += quant + " " + found.name;
+                        printadd += quant + " " + found.Tag;
                         if (quant >= 2)
                         {
                             printadd += "s";
@@ -143,39 +138,40 @@ namespace Bakery
                     break;
                 case "menu":
                     Console.WriteLine("Pierre's Menu:");
-                    foreach (Item bakeitem in bakery.itemMenu)
+                    foreach (Item bakeItem in bakery.ItemMenu)
                     {
                         Console.WriteLine("--------------");
-                        Console.WriteLine(bakeitem.name);
-                        Console.WriteLine(bakeitem.description);
-                        Console.WriteLine("$" + bakeitem.pricePer);
+                        Console.WriteLine(bakeItem.Tag);
+                        Console.WriteLine(bakeItem.ItemDesc);
+                        Console.WriteLine("$" + bakeItem.PricePer);
                     }
                     break;
                 case "cart":
                     Console.WriteLine("Your Cart:");
                     Console.WriteLine("--------------");
-                    bakery.curOrder.totalafterdeals = bakery.total(true);
-                    foreach (Item bakeitem in bakery.curOrder.order)
+                    bakery.Tab.TotalAfterDeals = bakery.CountOrderTotal(true);
+                    Console.WriteLine(bakery.Tab.TotalAfterDeals);
+                    foreach (Item bakeItem in bakery.Tab.Cart)
                     {
-                        Console.WriteLine(bakeitem.quantity);
-                        if (bakeitem.plural == null)
+                        Console.WriteLine(bakeItem.Amount);
+                        if (bakeItem.Plural == null)
                         {
-                            Console.WriteLine(bakeitem.name);
+                            Console.WriteLine(bakeItem.Tag);
                         }
                         else
                         {
-                            Console.WriteLine(bakeitem.plural);
+                            Console.WriteLine(bakeItem.Plural);
                         }
-                        Console.WriteLine(bakeitem.description);
-                        Console.WriteLine("$" + bakeitem.pricePer + " per " + bakeitem.name);
-                        Console.WriteLine("$" + bakeitem.totalprice + " for " + bakeitem.quantity + " " + bakeitem.name + "s");
+                        Console.WriteLine(bakeItem.ItemDesc);
+                        Console.WriteLine("$" + bakeItem.PricePer + " per " + bakeItem.Tag);
+                        Console.WriteLine("$" + bakeItem.Total + " for " + bakeItem.Amount + " " + bakeItem.Tag + "s");
                         Console.WriteLine("--------------");
                     }
                     Console.WriteLine("Total:");
-                    Console.WriteLine("$" + bakery.curOrder.totalafterdeals);
+                    Console.WriteLine("$" + bakery.Tab.TotalAfterDeals);
                     break;
                 case "push":
-                    bakery.history.Add(bakery.curOrder);
+                    bakery.History.Add(bakery.Tab);
                     Console.WriteLine("Sending.");
                     Console.Write(".");
                     System.Threading.Thread.Sleep(1000);
@@ -188,10 +184,13 @@ namespace Bakery
                     Console.WriteLine("Order sent, form cleared.");
                     Console.WriteLine("Thank you for shopping with us! You may enter another order.");
                     //Not actually implemented lol
-                    bakery.curOrder = new Order();
+                    bakery.Tab = new Order();
                     break;
                 case "help":
                     Help();
+                    break;
+                default:
+                    Console.WriteLine("Wha?");
                     break;
             }
         }
